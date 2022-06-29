@@ -1,0 +1,4 @@
+name: LastLife
+version: '${project.version}'
+main: lastlife.lastlife.LastLife
+api-version: 1.19
