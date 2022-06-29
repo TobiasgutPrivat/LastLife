@@ -1,4 +1,20 @@
 name: LastLife
-version: '${project.version}'
+version: 1.0
 main: lastlife.lastlife.LastLife
 api-version: 1.19
+commands:
+  SetLife:
+    permission: op
+    description: Sets number of Life of a Player
+    usage: /SetLife [Player]
+  GiveLife:
+    description: Gives one of your Life's to another Player
+    usage: /GiveLife [Player]
+  PickBoogieman:
+    permission: op
+    description: Picks Boogieman's
+    usage: /PickBoogieman
+  GetLive:
+    permission: op
+    description: Gets Player lives
+    usage: /GetLive [Player]
