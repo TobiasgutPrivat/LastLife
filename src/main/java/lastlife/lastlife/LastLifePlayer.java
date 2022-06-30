@@ -54,6 +54,11 @@ public class LastLifePlayer implements ConfigurationSerializable{
 		setLifes(startLifes);
 	}
 
+	public LastLifePlayer(Map<String, Object> data) {
+		super();
+		deserialize(data);
+	}
+
 	public Integer getLifes() {
 		return lifes;
 	}
@@ -93,14 +98,14 @@ public class LastLifePlayer implements ConfigurationSerializable{
 	public Map<String, Object> serialize() {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("PlayerUUID", player.getUniqueId().toString());
-		data.put("lifes", lifes);
+		data.put("lives", lifes);
 		data.put("Boogieman", Boogieman);
 		return data;
 	}
 	
 	public void deserialize(Map<String, Object> data) {
 		player = Bukkit.getServer().getPlayer(UUID.fromString(data.get("PlayerUUID").toString()));
-		setLifes(Integer.parseInt(data.get("PlayerUUID").toString()));
-		setBoogieman(Boolean.parseBoolean(data.get("PlayerUUID").toString()));
+		setLifes(Integer.parseInt(data.get("lives").toString()));
+		setBoogieman(Boolean.parseBoolean(data.get("Boogieman").toString()));
 	}
 }

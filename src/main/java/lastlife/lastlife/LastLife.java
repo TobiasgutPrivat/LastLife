@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.reflect.TypeToken;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,8 +24,9 @@ public class LastLife extends JavaPlugin{
 	private static final File folder = new File(String.valueOf("plugins//LastLife//"));
 	private static final File playerFile = new File("plugins//LastLife//players.json");
 	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	private static Map<String, Object> playerData = new HashMap<>();
-	
+	public static HashMap<String, Object> playerData = new HashMap<String, Object>();
+	public static Map tempData;
+
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -36,6 +38,11 @@ public class LastLife extends JavaPlugin{
 		this.getCommand("PickBoogieman").setExecutor(new PickBoogiemanCommand());
 		
 		playerData = readFile(playerFile);
+		Bukkit.getServer().broadcastMessage(playerData.toString());
+
+		for(Map.Entry<String, Object> playerData : playerData.entrySet()) {
+			new LastLifePlayer((Map<String, Object>) playerData.getValue());
+		}
 	}
 	
 	@Override
@@ -45,9 +52,10 @@ public class LastLife extends JavaPlugin{
 	
 	public void savePlayers() {
 		for (LastLifePlayer lastLifePlayer : lastLifePlayers) {
+			Bukkit.getServer().broadcastMessage(lastLifePlayer.toString());
 			playerData.put(lastLifePlayer.getPlayer().getName(), lastLifePlayer.serialize());
+			Bukkit.getServer().broadcastMessage(playerData.toString());
 		}
-		Bukkit.getServer().broadcastMessage(playerData.toString());
 		saveFile(playerFile, playerData);
 	}
 	
@@ -89,13 +97,9 @@ public class LastLife extends JavaPlugin{
 	}
 	
 	
-	public static Map<String, Object> readFile(File file) {
+	public static HashMap<String, Object> readFile(File file) {
 		if(!folder.exists()) {
-			try {
-				folder.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			folder.mkdir();
 		}
 		if(!file.exists()) {
 			try {
@@ -109,9 +113,24 @@ public class LastLife extends JavaPlugin{
 			fileReader = new FileReader(playerFile);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			return new HashMap<>();
+			return new HashMap<String, Object>();
 		}
-		return gson.fromJson(fileReader, HashMap.class);
+		//if (gson.fromJson(fileReader, HashMap.class) == null) {
+		//	return new HashMap<String, Object>();
+		//}
+		HashMap<String, Object> result = new HashMap<>();
+		//Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
+		Data data = gson.fromJson(fileReader, Data.class);
+		tempData = gson.fromJson(fileReader, Map.class);
+		if(data == null) {
+			data = new Data();
+		}
+		data.getData().entrySet().forEach(entry -> {
+			result.put(entry.getKey(),entry.getValue());
+		});
+
+		return result;
+		//return gson.fromJson(fileReader, Map.class);
 	}
 	
 	public static void saveFile(File file, Map<String, Object> data) {

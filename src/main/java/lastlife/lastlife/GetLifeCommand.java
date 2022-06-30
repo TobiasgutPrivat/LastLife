@@ -22,6 +22,8 @@ public class GetLifeCommand implements CommandExecutor {
             	return true;
         	}
             senderPlayer.sendMessage(receiverPlayer.getName() + " has " + LastLife.getLastLifePlayerByPlayer(receiverPlayer).getLifes().toString() + " Lifes");
+            senderPlayer.sendMessage(LastLife.playerData.toString());
+            senderPlayer.sendMessage(LastLife.tempData.toString());
         }
     	return true;
     }
